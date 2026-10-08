@@ -16,14 +16,16 @@ same statements run on both engines.
 import sqlite3
 import datetime
 from decimal import Decimal
+
 from flask import g, current_app
+
 
 _MYSQL_IMPORT_ERROR = None
 
 try:
     import mysql.connector
     from mysql.connector import Error as MySQLError
-except Exception as exc:  # noqa: BLE001
+except Exception as exc:
     mysql = None
     MySQLError = Exception
     _MYSQL_IMPORT_ERROR = exc
@@ -38,7 +40,7 @@ def driver():
 
 
 def _connect_mysql():
-    """Connect to MySQL/Aiven using the configured environment variables."""
+    """Connect to MySQL/Aiven using configured environment variables."""
 
     if mysql is None:
         raise DatabaseUnavailable(
@@ -58,8 +60,8 @@ def _connect_mysql():
             database=cfg["DB_NAME"],
 
             # Aiven requires SSL connections.
-            # Certificate verification is disabled here because the
-            # deployment does not currently provide a CA certificate.
+            # Certificate verification is disabled because
+            # no CA certificate is currently provided.
             ssl_verify_cert=False,
 
             autocommit=False,
@@ -115,7 +117,7 @@ def close_conn(_exc=None):
     if conn is not None:
         try:
             conn.close()
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
 
 
@@ -138,11 +140,7 @@ def _cursor(conn):
 
 
 def _normalise(value):
-    """Normalise database values for consistent application behaviour.
-
-    MySQL returns DECIMAL columns as Decimal while SQLite returns floats.
-    Decimal is not JSON serialisable, so convert it to float.
-    """
+    """Normalise database values for consistent application behaviour."""
 
     if isinstance(value, Decimal):
         return float(value)
@@ -228,7 +226,7 @@ def rollback():
 
     try:
         get_conn().rollback()
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
 
 
@@ -284,5 +282,5 @@ def healthcheck():
     except DatabaseUnavailable as exc:
         return False, str(exc)
 
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return False, str(exc)
