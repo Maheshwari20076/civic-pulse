@@ -1,0 +1,22 @@
+{% extends "shell.html" %}
+{% block title %}City map — CivicPulse{% endblock %}
+{% block head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>City map</h1>
+    <p id="map-status">Loading issues...</p>
+  </div>
+</div>
+{% include "_map_controls.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  window.CP_MAP_CENTER = [15.8497, 74.4977];
+  window.CP_ISSUE_URL = "{{ url_for('admin.issue_details', issue_id=0) }}";
+</script>
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+{% endblock %}

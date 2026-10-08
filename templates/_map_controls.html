@@ -1,0 +1,39 @@
+<div class="cp-card mb-3 cp-card-pad">
+  <div class="row g-2 align-items-end">
+    <div class="col-6 col-md-3">
+      <label class="form-label" for="f-level">Priority</label>
+      <select class="form-select form-select-sm" id="f-level" data-map-filter="level">
+        <option value="">All priorities</option>
+        <option value="critical">Critical</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
+    <div class="col-6 col-md-3">
+      <label class="form-label" for="f-category">Category</label>
+      <select class="form-select form-select-sm" id="f-category" data-map-filter="category">
+        <option value="">All categories</option>
+        {% for category in categories %}<option value="{{ category.id }}">{{ category.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-6 col-md-3">
+      <label class="form-label" for="f-status">Status</label>
+      <select class="form-select form-select-sm" id="f-status" data-map-filter="status">
+        <option value="">All statuses</option>
+        {% for status in statuses %}<option value="{{ status }}">{{ status }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="map-legend">
+        <span><i class="legend-dot" style="background:#B02B22"></i>Critical</span>
+        <span><i class="legend-dot" style="background:#C2571F"></i>High</span>
+        <span><i class="legend-dot" style="background:#B07A06"></i>Medium</span>
+        <span><i class="legend-dot" style="background:#2F7A5B"></i>Low</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="map-shell"><div id="map" class="map-canvas"></div></div>
+<p class="small muted mt-2">The number inside each pin is how many citizens reported that problem.</p>

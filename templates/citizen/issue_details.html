@@ -1,0 +1,131 @@
+{% extends "shell.html" %}
+{% import "_macros.html" as ui %}
+{% block title %}{{ issue.code }} — CivicPulse{% endblock %}
+
+{% block head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <div class="small muted">{{ issue.code }} &middot; {{ issue.category }}</div>
+    <h1>{{ issue.title }}</h1>
+    <p>{{ issue.address or 'Location pinned on the map below' }}</p>
+  </div>
+  <div class="d-flex align-items-center gap-3">
+    {{ ui.priority_ring(issue.priority_score) }}
+    <div>
+      <div class="badge-pri {{ priority_class(issue.priority_score) }}">{{ priority_level(issue.priority_score) }}</div>
+      <div class="small muted mt-1">Priority score</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="cp-card cp-card-pad mb-4">
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <span class="cluster-pill">{{ issue.report_count }} citizen report{{ '' if issue.report_count == 1 else 's' }}</span>
+        <span class="badge-status {{ status_class(issue.status) }}">{{ issue.status }}</span>
+        <span class="chip">Severity {{ issue.severity }}/10</span>
+        <span class="chip">Safety risk {{ issue.safety_risk }}/10</span>
+        <span class="chip">{{ issue.impact_level }} impact</span>
+      </div>
+      <p class="mb-0">{{ issue.description }}</p>
+    </div>
+
+    {% if analysis %}
+      <div class="cp-card mb-4">
+        <div class="cp-card-head">
+          <h3>What CivicPulse understood</h3>
+          <span class="chip">{{ 'Gemini' if analysis.source == 'gemini' else 'Local engine' }} &middot; {{ (analysis.confidence * 100)|round|int }}%</span>
+        </div>
+        <div class="cp-card-pad">
+          <p><span class="stat-label d-block">Why this is serious</span>{{ analysis.reasoning }}</p>
+          <p><span class="stat-label d-block">Recommended action</span>{{ analysis.recommendation }}</p>
+          {% if analysis.duplicate_summary %}
+            <p class="mb-0"><span class="stat-label d-block">Clustering</span>{{ analysis.duplicate_summary }}</p>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="cp-card mb-4">
+      <div class="cp-card-head"><h3>Why priority {{ issue.priority_score }}?</h3></div>
+      <div class="cp-card-pad">{{ ui.breakdown(breakdown) }}</div>
+    </div>
+
+    <div class="cp-card">
+      <div class="cp-card-head"><h3>Citizen reports in this cluster</h3><span class="small muted">{{ reports|length }} total</span></div>
+      <div class="cp-card-pad">
+        {% for report in reports %}
+          <div class="report-item">
+            <div class="d-flex justify-content-between gap-2">
+              <div class="fw-semibold">{{ report.user_name or 'Citizen' }}</div>
+              <div class="small muted">{{ report.created_at|timeago }}</div>
+            </div>
+            <p class="small mb-2">{{ report.description }}</p>
+            {% for image in report.images %}
+              <img src="{{ url_for('static', filename=image.image_path) }}" alt="Photo submitted with this report">
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="cp-card cp-card-pad mb-4">
+      <h3 style="font-size:1rem">Back this report</h3>
+      <p class="small muted">{{ issue.support_count }} citizen{{ '' if issue.support_count == 1 else 's' }} support this issue.
+        Support raises its priority without creating a duplicate ticket.</p>
+      {% if current_role == 'citizen' %}
+        {% if supported %}
+          <button class="btn btn-outline-ink w-100" disabled>You already support this</button>
+        {% else %}
+          <form method="post" action="{{ url_for('citizen.support', issue_id=issue.id) }}">
+            <button class="btn btn-signal w-100" type="submit">Support this issue</button>
+          </form>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <div class="cp-card cp-card-pad mb-4">
+      <h3 style="font-size:1rem">Handling department</h3>
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <i data-lucide="building-2" style="width:18px;height:18px;color:var(--petrol)"></i>
+        <span class="fw-bold">{{ issue.department or 'Not assigned yet' }}</span>
+      </div>
+      <div class="small muted">Opened {{ issue.created_at|dt }}. Last update {{ issue.updated_at|timeago }}.</div>
+    </div>
+
+    <div class="cp-card cp-card-pad mb-4">
+      <h3 style="font-size:1rem">Progress</h3>
+      {{ ui.timeline(timeline, ['Reported','AI Verified','Assigned','In Progress','Resolved','Closed']) }}
+    </div>
+
+    <div class="cp-card">
+      <div class="cp-card-head"><h3>Location</h3></div>
+      <div id="issue-map" style="height:240px"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  (function () {
+    var el = document.getElementById("issue-map");
+    if (!el) return;
+    var map = L.map("issue-map").setView([{{ issue.latitude }}, {{ issue.longitude }}], 16);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19, attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+    L.marker([{{ issue.latitude }}, {{ issue.longitude }}]).addTo(map)
+      .bindPopup({{ issue.title|tojson }});
+    L.circle([{{ issue.latitude }}, {{ issue.longitude }}], {
+      radius: 120, color: "#14566B", fillColor: "#14566B", fillOpacity: .08, weight: 1
+    }).addTo(map);
+  })();
+</script>
+{% endblock %}

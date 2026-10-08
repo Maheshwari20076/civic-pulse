@@ -1,0 +1,34 @@
+{% extends "shell.html" %}
+{% import "_macros.html" as ui %}
+{% block title %}My reports — CivicPulse{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>My reports</h1>
+    <p>Every issue you have contributed a report to.</p>
+  </div>
+  <div class="btn-group" role="group" aria-label="Filter reports">
+    {% for key, label in [('all','All'), ('active','Active'), ('resolved','Resolved')] %}
+      <a class="btn btn-sm {{ 'btn-primary' if active_filter == key else 'btn-outline-ink' }}"
+         href="{{ url_for('citizen.my_reports', filter=key) }}">{{ label }}</a>
+    {% endfor %}
+  </div>
+</div>
+
+{% if issues %}
+  <div class="row g-3">
+    {% for issue in issues %}
+      <div class="col-md-6">
+        {{ ui.issue_card(issue, url_for('citizen.issue_details', issue_id=issue.id)) }}
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="cp-card empty">
+    <h3>Nothing here yet</h3>
+    <p class="small">When you report an issue it will show up here with its live status and priority.</p>
+    <a class="btn btn-primary" href="{{ url_for('citizen.report') }}">Report an issue</a>
+  </div>
+{% endif %}
+{% endblock %}

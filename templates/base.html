@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}CivicPulse{% endblock %}</title>
+  <meta name="description" content="CivicPulse turns citizen reports into verified, prioritised civic issues that city departments can act on.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<nav class="cp-nav">
+  <div class="container-fluid px-3 px-lg-4 d-flex align-items-center gap-3">
+    {% if current_role %}
+      <button class="btn btn-sm btn-outline-ink sidebar-toggle" aria-label="Open menu">
+        <i data-lucide="menu" style="width:18px;height:18px"></i>
+      </button>
+    {% endif %}
+
+    <a class="cp-logo" href="{{ url_for('main.landing') }}">
+      <span class="cp-logo-mark"><i data-lucide="activity" style="width:17px;height:17px"></i></span>
+      CivicPulse
+    </a>
+
+    {% if not current_role %}
+      <div class="public-nav-links d-none d-md-flex align-items-center gap-1">
+        <a class="nav-link" href="{{ url_for('main.landing') }}#how-it-works">How it works</a>
+        <a class="nav-link" href="{{ url_for('main.business') }}">For municipalities</a>
+      </div>
+    {% endif %}
+    <div class="ms-auto d-flex align-items-center gap-2">
+      {% if current_role %}
+        <a class="bell" href="{{ url_for('citizen.notifications') }}" aria-label="Notifications ({{ unread_count }} unread)">
+          <i data-lucide="bell" style="width:19px;height:19px"></i>
+          {% if unread_count %}<span class="bell-count">{{ unread_count }}</span>{% endif %}
+        </a>
+        <span class="chip d-none d-md-inline-flex">
+          <i data-lucide="sparkles" style="width:13px;height:13px"></i>{{ ai_mode }}
+        </span>
+        <span class="d-none d-sm-inline small muted">{{ current_name }}</span>
+        <a class="btn btn-sm btn-outline-ink" href="{{ url_for('auth.logout') }}">Sign out</a>
+      {% else %}
+        <a class="nav-link d-none d-sm-inline" href="{{ url_for('auth.login') }}">Sign in</a>
+        <a class="btn btn-sm btn-primary" href="{{ url_for('auth.register') }}">Create account</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="cp-flash" role="status" aria-live="polite">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category if category in ['success','danger','warning'] else 'warning' }} py-2 px-3 mb-2">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% block body %}{% endblock %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/lucide@0.441.0/dist/umd/lucide.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

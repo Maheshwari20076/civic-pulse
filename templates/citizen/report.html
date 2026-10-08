@@ -1,0 +1,92 @@
+{% extends "shell.html" %}
+{% block title %}Report an issue — CivicPulse{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Report an issue</h1>
+    <p>Describe what you can see. CivicPulse works out the rest.</p>
+  </div>
+</div>
+
+<form method="post" enctype="multipart/form-data" id="report-form" novalidate>
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="cp-card cp-card-pad mb-4">
+        <div class="mb-3">
+          <label class="form-label" for="title">What is the problem?</label>
+          <input class="form-control" id="title" name="title" maxlength="200" required
+                 value="{{ form.title or '' }}" placeholder="Large pothole near the bus stop">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="description">Describe it</label>
+          <textarea class="form-control" id="description" name="description" rows="4" required
+                    placeholder="Say how bad it is and who it affects. The more specific you are, the better it is scored.">{{ form.description or '' }}</textarea>
+          <div class="form-help">At least 15 characters.</div>
+        </div>
+
+        <fieldset class="mb-3">
+          <legend class="form-label">Category</legend>
+          <div class="cat-grid">
+            {% for category in categories %}
+              <label class="cat-option">
+                <input type="radio" name="category" value="{{ category.name }}"
+                       {% if form.category == category.name %}checked{% endif %}>
+                <span><i data-lucide="{{ category.icon }}" style="width:15px;height:15px"></i>{{ category.name }}</span>
+              </label>
+            {% endfor %}
+          </div>
+          <div class="form-help mt-2">Not sure? Leave it blank — the analysis will pick one from your description.</div>
+        </fieldset>
+
+        <div class="mb-3">
+          <label class="form-label" for="image">Photo (optional)</label>
+          <input class="form-control" type="file" id="image" name="image" accept="image/png,image/jpeg,image/webp,image/gif">
+          <div class="form-help">PNG, JPG, WEBP or GIF, up to 5 MB.</div>
+          <div id="image-preview" class="mt-2"></div>
+        </div>
+      </div>
+
+      <div id="duplicate-hint" aria-live="polite"></div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="cp-card cp-card-pad mb-4">
+        <label class="form-label">Where is it?</label>
+        <button type="button" class="btn btn-outline-ink w-100 mb-2" id="use-location">
+          <i data-lucide="crosshair" style="width:16px;height:16px"></i> Use my current location
+        </button>
+        <div class="form-help mb-2" id="geo-note">Or tap the map to drop a pin, then drag it to fine-tune.</div>
+
+        <div class="map-shell mb-2">
+          <div id="pick-map" style="height:280px"></div>
+        </div>
+        <div class="small muted mb-3">Pin: <span id="coord-readout">not set</span></div>
+
+        <input type="hidden" id="latitude" name="latitude" value="{{ form.latitude or '' }}">
+        <input type="hidden" id="longitude" name="longitude" value="{{ form.longitude or '' }}">
+
+        <label class="form-label" for="address">Landmark or address</label>
+        <input class="form-control" id="address" name="address" maxlength="255"
+               value="{{ form.address or '' }}" placeholder="Near Central Bus Stand, Belagavi">
+        <div class="form-help">A nearby landmark helps the city judge how many people are affected.</div>
+      </div>
+
+      <button class="btn btn-primary btn-lg w-100" type="submit" id="submit-btn">Analyse and submit</button>
+      <p class="small muted mt-2">Your report is analysed, checked against nearby issues and scored before anyone
+        at the city sees it.</p>
+    </div>
+  </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>window.CP_MAP_CENTER = [15.8497, 74.4977];</script>
+<script src="{{ url_for('static', filename='js/report.js') }}"></script>
+{% endblock %}

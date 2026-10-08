@@ -1,0 +1,95 @@
+{% extends "shell.html" %}
+{% import "_macros.html" as ui %}
+{% block title %}Report analysed — CivicPulse{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{% if merged %}Your report joined an existing problem{% else %}Your report opened a new civic issue{% endif %}</h1>
+    <p>
+      {% if merged %}
+        {{ issue.report_count }} people have now reported this same problem. That is much harder for a city to ignore
+        than {{ issue.report_count }} separate tickets.
+      {% else %}
+        Nothing matching was open nearby, so CivicPulse opened {{ issue.code }} and scored it.
+      {% endif %}
+    </p>
+  </div>
+  <a class="btn btn-outline-ink" href="{{ url_for('citizen.issue_details', issue_id=issue.id) }}">Open the issue</a>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="cp-card cp-card-pad mb-4">
+      <div class="d-flex gap-3 align-items-center flex-wrap">
+        {{ ui.priority_ring(issue.priority_score) }}
+        <div>
+          <div class="small muted">{{ issue.code }}</div>
+          <h2 style="font-size:1.25rem;margin:0">{{ issue.title }}</h2>
+          <div class="d-flex flex-wrap gap-2 mt-2">
+            <span class="badge-pri {{ priority_class(issue.priority_score) }}">{{ priority_level(issue.priority_score) }} priority</span>
+            <span class="cluster-pill">{{ issue.report_count }} citizen report{{ '' if issue.report_count == 1 else 's' }}</span>
+            <span class="badge-status {{ status_class(issue.status) }}">{{ issue.status }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cp-card mb-4">
+      <div class="cp-card-head"><h3>What CivicPulse understood</h3>
+        {% if analysis %}<span class="chip">{{ 'Gemini' if analysis.source == 'gemini' else 'Local engine' }} &middot; {{ (analysis.confidence * 100)|round|int }}% confidence</span>{% endif %}
+      </div>
+      <div class="cp-card-pad">
+        <div class="row g-3 mb-3">
+          <div class="col-6 col-md-3"><div class="stat-label">Category</div><div class="fw-bold">{{ issue.category }}</div></div>
+          <div class="col-6 col-md-3"><div class="stat-label">Severity</div><div class="fw-bold">{{ issue.severity }}/10</div></div>
+          <div class="col-6 col-md-3"><div class="stat-label">Safety risk</div><div class="fw-bold">{{ issue.safety_risk }}/10</div></div>
+          <div class="col-6 col-md-3"><div class="stat-label">Impact</div><div class="fw-bold">{{ issue.impact_level }}</div></div>
+        </div>
+        {% if analysis %}
+          <p class="mb-2"><span class="stat-label d-block">Why this is serious</span>{{ analysis.reasoning }}</p>
+          <p class="mb-0"><span class="stat-label d-block">Recommended action</span>{{ analysis.recommendation }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="cp-card">
+      <div class="cp-card-head"><h3>Why priority {{ issue.priority_score }}?</h3></div>
+      <div class="cp-card-pad">{{ ui.breakdown(breakdown) }}</div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    {% if merged and analysis %}
+      <div class="cp-card cp-card-pad mb-4" style="border-left:4px solid var(--amber)">
+        <h3 style="font-size:1rem">Duplicate detection</h3>
+        <p class="small mb-2">{{ analysis.duplicate_summary }}</p>
+        <div class="d-flex align-items-baseline gap-2">
+          <span class="stat-value" style="font-size:1.6rem">{{ issue.report_count }}</span>
+          <span class="muted">reports</span>
+          <span class="muted">&rarr;</span>
+          <span class="stat-value" style="font-size:1.6rem">1</span>
+          <span class="muted">civic issue</span>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="cp-card cp-card-pad mb-4">
+      <h3 style="font-size:1rem">Where it goes next</h3>
+      <p class="small muted mb-2">Routed by category to the team that owns this kind of work.</p>
+      <div class="d-flex align-items-center gap-2">
+        <i data-lucide="building-2" style="width:18px;height:18px;color:var(--petrol)"></i>
+        <span class="fw-bold">{{ issue.department or recommended }}</span>
+      </div>
+      <hr>
+      <p class="small muted mb-0">You will get a notification each time the status changes — assigned, in progress
+        and resolved.</p>
+    </div>
+
+    <div class="d-grid gap-2">
+      <a class="btn btn-primary" href="{{ url_for('citizen.issue_details', issue_id=issue.id) }}">Track this issue</a>
+      <a class="btn btn-outline-ink" href="{{ url_for('citizen.report') }}">Report something else</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

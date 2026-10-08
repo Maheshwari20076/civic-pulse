@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block title %}Municipal Solution — CivicPulse{% endblock %}
+{% block body %}
+<section class="business-hero">
+  <div class="container">
+    <div class="hero-badge"><span></span> CivicPulse for municipalities</div>
+    <div class="row g-5 align-items-center mt-1">
+      <div class="col-lg-7">
+        <div class="section-kicker">BUSINESS + IMPACT</div>
+        <h1>Give city teams a clearer answer to one question: <span class="hero-accent">what needs attention now?</span></h1>
+        <p class="lead">CivicPulse is positioned as a municipal B2B SaaS platform. Citizens create the signals; municipalities get the intelligence and workflow.</p>
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <a class="btn btn-signal btn-lg" href="#pilot">Request a Municipal Pilot</a>
+          <a class="btn btn-outline-ink btn-lg" href="{{ url_for('main.landing') }}">Back to product</a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="buyer-card">
+          <div class="small muted">Who pays?</div>
+          <h3>Municipalities & urban local bodies</h3>
+          <p>Departments use the operational workspace while citizens remain free reporting users.</p>
+          <div class="buyer-row"><span>Buyer</span><b>Municipal administration</b></div>
+          <div class="buyer-row"><span>Users</span><b>Departments + citizens</b></div>
+          <div class="buyer-row"><span>Model</span><b>B2B SaaS subscription</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="business-model">
+  <div class="container">
+    <div class="section-kicker">BUSINESS MODEL</div>
+    <div class="row g-3">
+      {% for name,price,desc,items in [
+        ('Pilot','₹25,000 / month*','One ward / controlled pilot','Issue intelligence|Basic analytics|Pilot support'),
+        ('Growth','₹75,000 / month*','Multi-department deployment','Advanced analytics|Department insights|Integrations'),
+        ('Enterprise','Custom*','City-wide / multi-organization','SLA options|Enterprise integrations|Dedicated support')
+      ] %}
+      <div class="col-md-4"><div class="price-card {% if name == 'Growth' %}featured{% endif %}">
+        {% if name == 'Growth' %}<span class="popular">Recommended for scale</span>{% endif %}
+        <h3>{{ name }}</h3><div class="price">{{ price }}</div><p>{{ desc }}</p>
+        <ul>{% for item in items.split('|') %}<li><i data-lucide="check"></i>{{ item }}</li>{% endfor %}</ul>
+      </div></div>
+      {% endfor %}
+    </div>
+    <p class="small muted mt-3">*All pricing shown here is a proposed business hypothesis for the competition MVP, not a claim about market pricing.</p>
+    <div class="revenue-strip">
+      <div><i data-lucide="repeat-2"></i><b>Subscription revenue</b><span>Monthly / annual municipal contracts</span></div>
+      <div><i data-lucide="bar-chart-4"></i><b>Premium analytics</b><span>Advanced intelligence and reporting</span></div>
+      <div><i data-lucide="plug-zap"></i><b>Integrations</b><span>Connect existing municipal systems</span></div>
+      <div><i data-lucide="headphones"></i><b>Enterprise support</b><span>Onboarding, support and services</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-kicker">COST STRUCTURE</div><h2 class="mb-4">Lean software economics for the MVP.</h2>
+    <div class="row g-3">
+      {% for icon,title,text in [
+        ('cloud','Cloud hosting','Application, database, storage and monitoring.'),
+        ('sparkles','AI / API usage','AI-assisted perception and intelligence workloads.'),
+        ('code-2','Development','Product engineering, security and new integrations.'),
+        ('wrench','Maintenance','Bug fixes, upgrades and operational reliability.'),
+        ('headphones','Customer support','Municipal onboarding, training and support.'),
+        ('building-2','Municipal onboarding','Configuration, workflows and department setup.')
+      ] %}
+      <div class="col-md-6 col-lg-4"><div class="feature startup-feature"><div class="feature-icon"><i data-lucide="{{ icon }}"></i></div><h3>{{ title }}</h3><p>{{ text }}</p></div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="competitive">
+  <div class="container">
+    <div class="section-kicker">COMPETITIVE ADVANTAGE</div>
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-5"><h2>Complaint collection is the starting point — not the product.</h2><p class="muted">CivicPulse creates a chain from community evidence to operational action, with explainability at each important decision.</p></div>
+      <div class="col-lg-7"><div class="comparison-card">
+        <div class="comparison-head"><span>Capability</span><span>Complaint collection</span><span>CivicPulse</span></div>
+        {% for a,b,c in [('Citizen reporting','✓','✓'),('Duplicate clustering','—','✓'),('Community signals','—','✓'),('Explainable priority','—','✓'),('Department routing','Limited','✓'),('SLA + resolution trail','Limited','✓'),('Emerging problem detection','—','✓'),('Municipal analytics','Basic','✓')] %}
+        <div class="comparison-row"><span>{{ a }}</span><span>{{ b }}</span><span class="yes">{{ c }}</span></div>
+        {% endfor %}
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-kicker">VALUE / ROI</div>
+    <h2 class="mb-2">What we would measure in a pilot.</h2>
+    <p class="muted mb-4">These are measurement categories, not guaranteed results. Any numbers shown in the demo are simulated or derived from the current demo dataset.</p>
+    <div class="row g-3">
+      {% for icon,title,metric in [('layers','Duplicate reduction','% of incoming reports consolidated into existing issues'),('clock-4','Resolution time','Time from report intake to resolution'),('triangle-alert','Critical identification','High-priority issues surfaced for action'),('users-round','Department workload','Open and resolved work by department')] %}
+      <div class="col-md-6 col-lg-3"><div class="roi-card h-100"><div class="feature-icon"><i data-lucide="{{ icon }}"></i></div><h3>{{ title }}</h3><p>{{ metric }}</p><span class="demo-label">Pilot KPI</span></div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="go-to-market">
+  <div class="container">
+    <div class="section-kicker">GO-TO-MARKET</div><h2 class="mb-4">Land small. Prove value. Expand.</h2>
+    <div class="gtm-journey">
+      {% for n,title,text in [('01','Pilot one ward','Run a controlled deployment with one municipality.'),('02','Measure impact','Track duplicates, response, workload and resolution.'),('03','Expand departments','Bring more operational teams onto the workflow.'),('04','Go city-wide','Scale reporting, intelligence and analytics.'),('05','Repeat','Deploy the same SaaS model across municipalities.')] %}
+      <div class="gtm-journey-card"><b>{{ n }}</b><h3>{{ title }}</h3><p>{{ text }}</p></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-6">
+        <div class="section-kicker">SCALABILITY</div>
+        <h2>One platform, many municipal organizations.</h2>
+        <p class="muted">The MVP can evolve toward organization-aware tenancy, department-level permissions, configurable categories, SLA policies, integrations and city-specific analytics without changing the core citizen-to-resolution concept.</p>
+        <div class="scale-list">
+          <span><i data-lucide="building-2"></i> Municipality / organization</span>
+          <span><i data-lucide="layers-3"></i> Multiple departments</span>
+          <span><i data-lucide="map"></i> Multiple wards / zones</span>
+          <span><i data-lucide="bar-chart-3"></i> Organization-level analytics</span>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="pitch-card dark">
+          <div class="section-kicker">WHY CIVICPULSE?</div>
+          <div class="pitch-points"><b>Problem</b><span>Duplicate, fragmented civic complaints.</span><b>Solution</b><span>Community-powered operational intelligence.</span><b>Customer</b><span>Municipalities and urban local bodies.</span><b>Revenue</b><span>SaaS subscriptions + premium services.</span><b>Scale</b><span>Ward → city → multiple municipalities.</span><b>Impact</b><span>Clearer priorities and accountable resolution.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pilot">
+  <div class="container">
+    <div class="pilot-card">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-7">
+          <div class="section-kicker">PILOT CTA</div>
+          <h2>Ready to test CivicPulse with one ward?</h2>
+          <p>Use the form to prepare a pilot request. For a live deployment, set <code>PILOT_CONTACT_EMAIL</code> in the environment.</p>
+        </div>
+        <div class="col-lg-5">
+          <form class="pilot-form" id="pilot-form">
+            <input class="form-control" id="pilot-name" required placeholder="Your name" aria-label="Your name">
+            <input class="form-control" id="pilot-org" required placeholder="Municipality / organization" aria-label="Municipality or organization">
+            <input class="form-control" id="pilot-email" type="email" required placeholder="Work email" aria-label="Work email">
+            <select class="form-select" id="pilot-size" aria-label="Pilot size"><option>One ward</option><option>Multiple wards</option><option>City-wide discussion</option></select>
+            <button class="btn btn-signal w-100" type="submit">Prepare pilot request <i data-lucide="send"></i></button>
+            <div id="pilot-note" class="small muted" role="status"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var form = document.getElementById("pilot-form");
+  if (!form) return;
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = document.getElementById("pilot-name").value.trim();
+    var org = document.getElementById("pilot-org").value.trim();
+    var email = document.getElementById("pilot-email").value.trim();
+    var size = document.getElementById("pilot-size").value;
+    var recipient = {{ pilot_email|tojson }};
+    var subject = encodeURIComponent("CivicPulse Municipal Pilot Request — " + org);
+    var body = encodeURIComponent(
+      "Hello CivicPulse team,\n\n" +
+      "I would like to discuss a municipal pilot.\n\n" +
+      "Name: " + name + "\nOrganization: " + org + "\nWork email: " + email + "\nPilot scope: " + size + "\n"
+    );
+    if (recipient) {
+      window.location.href = "mailto:" + recipient + "?subject=" + subject + "&body=" + body;
+      document.getElementById("pilot-note").textContent = "Your email draft is ready to send.";
+    } else {
+      document.getElementById("pilot-note").textContent =
+        "Pilot request prepared. Add PILOT_CONTACT_EMAIL to route this form to your team inbox.";
+    }
+  });
+})();
+</script>
+{% endblock %}

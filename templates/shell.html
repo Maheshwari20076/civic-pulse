@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="shell">
+  <div class="sidebar-backdrop"></div>
+  <aside class="sidebar" aria-label="Main navigation">
+    {% if current_role == 'admin' %}
+      <div class="group-label">City Intelligence Center</div>
+      {% set nav = [
+        ('admin.dashboard', 'layout-dashboard', 'Overview'),
+        ('admin.issues', 'list-checks', 'Priority queue'),
+        ('admin.city_map', 'map', 'City map'),
+        ('admin.signals', 'radar', 'Emerging signals'),
+        ('admin.analytics', 'bar-chart-3', 'Analytics'),
+        ('admin.departments', 'building-2', 'Departments')
+      ] %}
+    {% else %}
+      <div class="group-label">Citizen</div>
+      {% set nav = [
+        ('citizen.dashboard', 'layout-dashboard', 'Dashboard'),
+        ('citizen.report', 'circle-plus', 'Report an issue'),
+        ('citizen.my_reports', 'file-text', 'My reports'),
+        ('citizen.city_map', 'map', 'Nearby issues'),
+        ('citizen.notifications', 'bell', 'Notifications'),
+        ('citizen.profile', 'user', 'Profile')
+      ] %}
+    {% endif %}
+
+    {% for endpoint, icon, label in nav %}
+      <a href="{{ url_for(endpoint) }}" {% if request.endpoint == endpoint %}class="active" aria-current="page"{% endif %}>
+        <i data-lucide="{{ icon }}" style="width:17px;height:17px"></i>{{ label }}
+        {% if endpoint == 'citizen.notifications' and unread_count %}<span class="count">{{ unread_count }}</span>{% endif %}
+      </a>
+    {% endfor %}
+
+    {% if current_role == 'citizen' %}
+      <div class="group-label">Shortcut</div>
+      <a href="{{ url_for('citizen.report') }}" style="background:var(--amber-100);color:#8A5B00">
+        <i data-lucide="megaphone" style="width:17px;height:17px"></i>Report something now
+      </a>
+    {% endif %}
+  </aside>
+
+  <main class="content">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+/* Mobile and tablet behaviour. The citizen flow has to work on a phone at
+   the side of a road, so the report form and map get priority. */
+
+@media (max-width: 991.98px) {
+  .sidebar {
+    position: fixed; left: 0; top: 57px; z-index: 1040;
+    transform: translateX(-100%); transition: transform .2s ease;
+    box-shadow: var(--shadow-lg); width: 250px;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .content { padding: 1.1rem 1rem 3rem; }
+  .sidebar-backdrop {
+    display: none; position: fixed; inset: 57px 0 0; background: rgba(15,36,48,.35); z-index: 1035;
+  }
+  .sidebar-backdrop.show { display: block; }
+}
+
+@media (min-width: 992px) {
+  .sidebar-toggle { display: none !important; }
+}
+
+@media (max-width: 767.98px) {
+  body { font-size: 14.5px; }
+  h1 { font-size: 1.7rem; }
+  .hero { padding: 2.5rem 0 1.5rem; }
+  .page-head { align-items: flex-start; }
+  .stat-value { font-size: 1.6rem; }
+  #map, .map-canvas { height: 62vh; min-height: 340px; }
+  .issue-row { flex-wrap: wrap; padding: .85rem 1rem; }
+  .cp-flash { top: 66px; right: 10px; left: 10px; width: auto; }
+  .btn { padding: .6rem 1rem; min-height: 44px; }
+  .cat-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .breakdown-row .lbl { width: 108px; font-size: .8125rem; }
+  .breakdown-row .val { width: 64px; }
+  .table-cp tbody td { padding: .55rem .75rem; }
+}
+
+@media (max-width: 991.98px) {
+  .flow-grid { grid-template-columns:repeat(2,1fr); }
+  .gtm-journey { grid-template-columns:repeat(2,1fr); }
+  .revenue-strip { grid-template-columns:repeat(2,1fr); }
+  .footer-grid { grid-template-columns:1.5fr 1fr 1fr; }
+}
+@media (max-width: 767.98px) {
+  .hero-badge { font-size:.68rem; }
+  .hero-proof { gap:.55rem .9rem; }
+  .intelligence-card { padding:1rem; border-radius:18px; }
+  .intelligence-top { align-items:flex-start; }
+  .signal-row { font-size:.72rem; }
+  .flow-grid { grid-template-columns:1fr 1fr; }
+  .comparison-card { overflow-x:auto; }
+  .comparison-head, .comparison-row { min-width:520px; }
+  .gtm-line { align-items:stretch; flex-direction:column; }
+  .gtm-line > i { transform:rotate(90deg); align-self:center; }
+  .revenue-strip { grid-template-columns:1fr; }
+  .gtm-journey { grid-template-columns:1fr; }
+  .scale-list { grid-template-columns:1fr; }
+  .pitch-card { flex-direction:column; align-items:flex-start; padding:1.4rem; }
+  .footer-grid { grid-template-columns:1fr 1fr; }
+  .footer-grid > div:first-child { grid-column:1 / -1; }
+  .footer-bottom { gap:.6rem; flex-direction:column; }
+  .business-hero { padding:2.6rem 0 2rem; }
+  .business-hero h1 { font-size:2rem; }
+  .issue-intel-banner { align-items:flex-start; flex-direction:column; }
+  .intel-strip { align-items:flex-start; flex-wrap:wrap; }
+  .intel-strip > div:first-child { min-width:100%; }
+  .intel-item { flex:1; }
+}

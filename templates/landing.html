@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% block title %}CivicPulse — From citizen reports to city intelligence{% endblock %}
+
+{% block body %}
+<section class="hero startup-hero">
+  <div class="container position-relative">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6">
+        <div class="hero-badge"><span></span> CivicTech intelligence for municipalities</div>
+        <p class="eyebrow mb-2 mt-3">From problem reporting to operational action</p>
+        <h1 class="mb-3">Turn scattered complaints into <span class="hero-accent">clear city priorities.</span></h1>
+        <p class="lead mb-4">
+          CivicPulse helps municipalities understand citizen reports, collapse duplicates,
+          explain what needs attention first, route work to the right department, and track resolution.
+        </p>
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <a class="btn btn-primary btn-lg" href="{{ url_for('auth.register') }}">Explore the MVP</a>
+          <a class="btn btn-signal btn-lg" href="{{ url_for('main.business') }}">Request a municipal pilot</a>
+        </div>
+        <div class="hero-proof">
+          <span><i data-lucide="check"></i> Citizen-friendly reporting</span>
+          <span><i data-lucide="check"></i> Explainable prioritization</span>
+          <span><i data-lucide="check"></i> Department-ready workflow</span>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="intelligence-card">
+          <div class="intelligence-top">
+            <div>
+              <div class="small muted">Live product concept</div>
+              <div class="fw-bold fs-5">One problem. Multiple signals.</div>
+            </div>
+            <span class="live-pill"><span></span> Intelligence</span>
+          </div>
+          <div class="signal-stack">
+            {% for n, label in [(1,'Citizen report'),(2,'Citizen report'),(3,'Citizen report'),(4,'Citizen report'),(5,'Citizen report'),(6,'Citizen report')] %}
+              <div class="signal-row" style="--delay:{{ n * 60 }}ms">
+                <span class="signal-icon"><i data-lucide="map-pin"></i></span>
+                <span>{{ label }} {{ n }}</span>
+                <span class="signal-tag">same area</span>
+              </div>
+            {% endfor %}
+          </div>
+          <div class="merge-line"><span></span><b>Community signal detected</b><span></span></div>
+          <div class="merged-issue premium-merge">
+            <div class="d-flex align-items-center gap-3">
+              <div class="pri-ring critical" style="--pct:91"><span>91</span></div>
+              <div class="flex-grow-1">
+                <div class="d-flex justify-content-between gap-2">
+                  <div class="fw-bold">Road damage near Central Bus Stand</div>
+                  <span class="badge-pri critical">Critical</span>
+                </div>
+                <div class="issue-meta mt-1">6 reports consolidated · Road Infrastructure</div>
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                  <span class="cluster-pill"><i data-lucide="layers"></i> Clustered</span>
+                  <span class="chip"><i data-lucide="building-2"></i> Public Works</span>
+                  <span class="chip"><i data-lucide="clock-3"></i> SLA tracked</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="micro-flow">
+            <span>Report</span><b>→</b><span>Cluster</span><b>→</b><span>Prioritize</span><b>→</b><span>Resolve</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-kicker">THE MUNICIPALITY'S PROBLEM</div>
+    <div class="row g-4 align-items-end mb-4">
+      <div class="col-lg-7">
+        <h2>More complaints do not automatically mean more clarity.</h2>
+      </div>
+      <div class="col-lg-5">
+        <p class="muted mb-0">A city team needs to know what is one problem, what is urgent, who owns it, and whether it is actually getting resolved.</p>
+      </div>
+    </div>
+    <div class="row g-3">
+      {% for icon,title,text in [
+        ('copy','Duplicate reports','The same pothole, bin overflow or streetlight can appear as many separate complaints.'),
+        ('list-filter','Manual prioritization','Teams need to decide urgency across severity, safety, impact and community evidence.'),
+        ('eye-off','Poor operational visibility','A complaint inbox does not show emerging patterns, workload or resolution accountability.')
+      ] %}
+      <div class="col-md-4">
+        <div class="problem-card">
+          <div class="feature-icon danger-icon"><i data-lucide="{{ icon }}"></i></div>
+          <h3>{{ title }}</h3><p>{{ text }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-5">
+        <div class="section-kicker">THE CIVICPULSE FLOW</div>
+        <h2>From a citizen signal to a department action.</h2>
+        <p class="muted">The existing MVP connects citizen reporting with municipal operations instead of treating them as separate products.</p>
+        <a class="btn btn-outline-ink mt-2" href="{{ url_for('auth.login') }}">Open the city intelligence center</a>
+      </div>
+      <div class="col-lg-7">
+        <div class="flow-grid">
+          {% set steps = [
+            ('megaphone','01','Report','Photo, description and location.'),
+            ('brain','02','Understand','Category, severity, risk and impact.'),
+            ('layers','03','Cluster','Related reports become one civic issue.'),
+            ('gauge','04','Prioritize','An explainable score surfaces urgency.'),
+            ('git-branch','05','Route','The issue reaches the right department.'),
+            ('check-circle-2','06','Resolve','Status, SLA and timeline stay visible.')
+          ] %}
+          {% for icon,num,name,desc in steps %}
+          <div class="flow-card">
+            <div class="flow-num">{{ num }}</div><i data-lucide="{{ icon }}"></i>
+            <h3>{{ name }}</h3><p>{{ desc }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-kicker">WHAT IS ALREADY IN THE MVP</div>
+    <h2 class="mb-4">Built to demonstrate the complete operating loop.</h2>
+    <div class="row g-3">
+      {% for icon,title,text in [
+        ('layout-dashboard','Municipal dashboard','Priority queue, critical issues, emerging signals, status visibility and department performance.'),
+        ('camera','Citizen reporting','Location-aware reporting with descriptions, images and issue support.'),
+        ('brain-circuit','AI-assisted analysis','Category, severity, safety risk, impact, duplicate reasoning and recommendations.'),
+        ('map','Civic map','Spatial view of reported issues and their operational context.'),
+        ('bar-chart-3','Analytics','Category, status, priority, workload, reports-over-time and resolution trends.'),
+        ('history','Resolution tracking','Department assignment, status changes, notes, notifications and timelines.')
+      ] %}
+      <div class="col-md-6 col-lg-4"><div class="feature startup-feature">
+        <div class="feature-icon"><i data-lucide="{{ icon }}"></i></div><h3>{{ title }}</h3><p>{{ text }}</p>
+      </div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="business-banner">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-7">
+          <div class="section-kicker">BUILT AS A BUSINESS</div>
+          <h2>Citizens use it free. Municipalities pay for intelligence.</h2>
+          <p>Position CivicPulse as a municipal B2B SaaS platform: a recurring operating layer for reporting, prioritization, routing and accountability.</p>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="business-chip">Municipal SaaS</span>
+            <span class="business-chip">Pilot → Scale</span>
+            <span class="business-chip">Multi-municipality ready</span>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="mini-pricing">
+            <div><span>Pilot</span><b>₹25k/mo*</b></div>
+            <div><span>Growth</span><b>₹75k/mo*</b></div>
+            <div><span>Enterprise</span><b>Custom*</b></div>
+            <small>*Proposed business hypothesis for the competition MVP.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-kicker">DEMO DATA, NOT MARKET CLAIMS</div>
+    <div class="row g-4 text-center">
+      <div class="col-6 col-lg-3"><div class="metric-big" data-count="{{ stats.reports }}">0</div><div class="stat-label">Citizen reports in this demo</div></div>
+      <div class="col-6 col-lg-3"><div class="metric-big" data-count="{{ stats.active }}">0</div><div class="stat-label">Active issues in this demo</div></div>
+      <div class="col-6 col-lg-3"><div class="metric-big" data-count="{{ stats.resolved }}">0</div><div class="stat-label">Resolved issues in this demo</div></div>
+      <div class="col-6 col-lg-3"><div class="metric-big" data-count="{{ stats.rate }}" data-suffix="%">0</div><div class="stat-label">Demo resolution rate</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-kicker">WHY CIVICPULSE?</div>
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-5"><h2>Not another complaint collection app.</h2><p class="muted">The differentiator is the operational layer that sits between community signals and municipal action.</p></div>
+      <div class="col-lg-7">
+        <div class="comparison-card">
+          <div class="comparison-head"><span>Capability</span><span>Basic complaint app</span><span>CivicPulse</span></div>
+          {% for a,b,c in [
+            ('Collect reports','✓','✓'),
+            ('Group duplicate reports','—','✓'),
+            ('Explain priority','—','✓'),
+            ('Route by department','Limited','✓'),
+            ('Track SLA + resolution','Limited','✓'),
+            ('Detect emerging patterns','—','✓'),
+            ('Municipal analytics','Basic','✓')
+          ] %}
+          <div class="comparison-row"><span>{{ a }}</span><span>{{ b }}</span><span class="yes">{{ c }}</span></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-8">
+        <div class="section-kicker">GO-TO-MARKET</div>
+        <h2>Start with one ward. Prove value. Then scale.</h2>
+        <div class="gtm-line">
+          {% for n,text in [('1','Pilot one municipality / ward'),('2','Measure impact'),('3','Expand departments'),('4','City-wide deployment'),('5','Expand to other municipalities')] %}
+          <div class="gtm-step"><b>{{ n }}</b><span>{{ text }}</span></div>{% if not loop.last %}<i>→</i>{% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-lg-4"><div class="roi-card"><div class="feature-icon"><i data-lucide="trending-up"></i></div><h3>Value to the buyer</h3><p>Less duplicate noise, clearer priorities, better workload visibility and an auditable resolution trail.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="pitch-card">
+      <div>
+        <div class="section-kicker">THE 20-SECOND PITCH</div>
+        <h2>CivicPulse turns community reports into operational intelligence for municipalities.</h2>
+        <p>We combine citizen signals, duplicate clustering, explainable prioritization, routing, SLA tracking and emerging-problem detection in one workflow.</p>
+      </div>
+      <a class="btn btn-signal btn-lg" href="{{ url_for('main.business') }}">See the business model <i data-lucide="arrow-up-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<footer class="cp-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div><div class="footer-brand"><span class="cp-logo-mark"><i data-lucide="activity"></i></span> CivicPulse</div><p>From citizen reports to city intelligence.</p></div>
+      <div><b>Product</b><a href="{{ url_for('auth.login') }}">City intelligence</a><a href="{{ url_for('auth.register') }}">Citizen reporting</a><a href="{{ url_for('main.business') }}">Municipal solution</a></div>
+      <div><b>Startup</b><a href="{{ url_for('main.business') }}#business-model">Business model</a><a href="{{ url_for('main.business') }}#competitive">Competitive advantage</a><a href="{{ url_for('main.business') }}#pilot">Request a pilot</a></div>
+    </div>
+    <div class="footer-bottom"><span>© CivicPulse · Competition MVP</span><a href="{{ url_for('main.setup') }}">System status</a></div>
+  </div>
+</footer>
+{% endblock %}

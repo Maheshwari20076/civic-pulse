@@ -1,0 +1,54 @@
+{% macro priority_ring(score, small=false) -%}
+  <div class="pri-ring {{ priority_class(score) }}{{ ' sm' if small else '' }}" style="--pct:{{ score }}"
+       role="img" aria-label="Priority {{ score }} out of 100, {{ priority_level(score) }}">
+    <span>{{ score }}</span>
+  </div>
+{%- endmacro %}
+
+{% macro issue_card(issue, url) -%}
+<a class="cp-card cp-card-pad d-flex gap-3 align-items-center text-decoration-none h-100" href="{{ url }}">
+  {{ priority_ring(issue.priority_score, true) }}
+  <div class="flex-grow-1 min-w-0">
+    <div class="issue-title text-truncate">{{ issue.title }}</div>
+    <div class="issue-meta">{{ issue.code }} &middot; {{ issue.category or 'Uncategorised' }}{% if issue.address %} &middot; {{ issue.address }}{% endif %}</div>
+    <div class="d-flex flex-wrap gap-2 mt-2">
+      <span class="cluster-pill">{{ issue.report_count }} report{{ '' if issue.report_count == 1 else 's' }}</span>
+      <span class="badge-pri {{ priority_class(issue.priority_score) }}">{{ priority_level(issue.priority_score) }}</span>
+      <span class="badge-status {{ status_class(issue.status) }}">{{ issue.status }}</span>
+    </div>
+  </div>
+</a>
+{%- endmacro %}
+
+{% macro breakdown(rows) -%}
+<div>
+  {% for row in rows %}
+    <div class="breakdown-row">
+      <div class="lbl">{{ row.label }}</div>
+      <div class="bar"><i style="width: {{ row.value }}%"></i></div>
+      <div class="val">{{ row.value }} &times; {{ row.weight }}%</div>
+    </div>
+    <div class="small muted" style="margin:-.3rem 0 .35rem 0">{{ row.detail }}</div>
+  {% endfor %}
+</div>
+{%- endmacro %}
+
+{% macro timeline(entries, flow) -%}
+<ul class="timeline">
+  {% for entry in entries %}
+    <li class="{{ 'current' if loop.last else 'done' }}">
+      <div class="tl-status">{{ entry.status }}</div>
+      {% if entry.note %}<div class="small">{{ entry.note }}</div>{% endif %}
+      <div class="tl-meta">{{ entry.created_at|dt }}{% if entry.actor %} &middot; {{ entry.actor }}{% endif %}</div>
+    </li>
+  {% endfor %}
+  {% if flow %}
+    {% set seen = entries|map(attribute='status')|list %}
+    {% for step in flow %}
+      {% if step not in seen %}
+        <li><div class="tl-status muted">{{ step }}</div><div class="tl-meta">Pending</div></li>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+</ul>
+{%- endmacro %}

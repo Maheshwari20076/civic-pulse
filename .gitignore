@@ -1,0 +1,9 @@
+venv/
+.env
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+database/civicpulse.sqlite3
+static/uploads/*
+!static/uploads/.gitkeep

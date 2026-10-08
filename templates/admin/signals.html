@@ -1,0 +1,75 @@
+{% extends "shell.html" %}
+{% block title %}Emerging signals — CivicPulse{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Emerging signals</h1>
+    <p>Patterns across issues that no single report would reveal.</p>
+  </div>
+</div>
+
+{% if stale %}
+  <div class="escalation mb-4">
+    <h3><i data-lucide="alarm-clock" style="width:16px;height:16px"></i> Follow-up overdue</h3>
+    <div class="table-wrap">
+      <table class="table-cp">
+        <thead><tr><th>Issue</th><th>Status</th><th>Waiting</th><th>Department</th><th>Priority</th></tr></thead>
+        <tbody>
+          {% for row in stale %}
+            <tr>
+              <td><a class="issue-title" href="{{ url_for('admin.issue_details', issue_id=row.id) }}">{{ row.title }}</a>
+                  <div class="issue-meta">{{ row.code }}</div></td>
+              <td><span class="badge-status {{ status_class(row.status) }}">{{ row.status }}</span></td>
+              <td class="small">{{ row.hours_stale }} hours</td>
+              <td class="small">{{ row.department or '—' }}</td>
+              <td><span class="badge-pri {{ priority_class(row.priority_score) }}">{{ row.priority_score }}</span></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endif %}
+
+{% if signals %}
+  <div class="row g-4">
+    {% for signal in signals %}
+      <div class="col-lg-6">
+        <div class="cp-card signal-card h-100">
+          <div class="cp-card-head">
+            <div>
+              <h3>{{ signal.title|capitalize }}</h3>
+              <div class="issue-meta">{{ signal.area }}</div>
+            </div>
+            <div class="text-end">
+              <div class="conf">{{ (signal.confidence * 100)|round|int }}%</div>
+              <div class="small muted">confidence</div>
+            </div>
+          </div>
+          <div class="cp-card-pad">
+            <div class="d-flex gap-2 mb-3">
+              <span class="chip">{{ signal.issue_count }} related issues</span>
+              <span class="chip">{{ signal.report_count }} citizen reports</span>
+            </div>
+            <p class="small">{{ signal.explanation }}</p>
+            <div class="small muted mb-2">Issues in this cluster</div>
+            {% for issue in signal.issues %}
+              <div class="d-flex justify-content-between gap-2 py-1" style="border-bottom:1px solid var(--line-soft)">
+                <a class="small" href="{{ url_for('admin.issue_details', issue_id=issue.id) }}">{{ issue.title }}</a>
+                <span class="badge-pri {{ priority_class(issue.priority_score) }}">{{ issue.priority_score }}</span>
+              </div>
+            {% endfor %}
+            <a class="btn btn-outline-ink btn-sm mt-3" href="{{ url_for('admin.city_map') }}">Investigate on the map</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="cp-card empty">
+    <h3>No signals above threshold</h3>
+    <p class="small mb-0">A signal needs several related issues close together inside the detection window.</p>
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Create account — CivicPulse{% endblock %}
+{% block body %}
+<div class="container" style="max-width:520px;padding:3rem 1rem">
+  <h1 style="font-size:1.9rem">Create your citizen account</h1>
+  <p class="muted">One account lets you report problems, follow them and back up reports from neighbours.</p>
+  <form method="post" class="cp-card cp-card-pad" novalidate>
+    <div class="mb-3">
+      <label class="form-label" for="name">Full name</label>
+      <input class="form-control" id="name" name="name" value="{{ form.name }}" required autocomplete="name" autofocus>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="email">Email</label>
+      <input class="form-control" type="email" id="email" name="email" value="{{ form.email }}" required autocomplete="email">
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="password">Password</label>
+      <input class="form-control" type="password" id="password" name="password" required autocomplete="new-password">
+      <div class="form-help">At least 8 characters, mixing letters and numbers.</div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="confirm_password">Confirm password</label>
+      <input class="form-control" type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password">
+    </div>
+    <button class="btn btn-primary w-100" type="submit">Create account</button>
+    <p class="small muted mt-3 mb-0">Already registered? <a href="{{ url_for('auth.login') }}">Sign in</a>.</p>
+  </form>
+</div>
+{% endblock %}

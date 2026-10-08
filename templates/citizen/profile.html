@@ -1,0 +1,55 @@
+{% extends "shell.html" %}
+{% import "_macros.html" as ui %}
+{% block title %}Profile — CivicPulse{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ user.name }}</h1>
+    <p>{{ user.email }} &middot; member since {{ user.created_at|dt('%b %Y') }}</p>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="cp-card cp-card-pad">
+      <h3 style="font-size:1rem">Civic impact</h3>
+      <div class="stat-value" data-count="{{ user.impact_score }}">0</div>
+      <div class="impact-meter my-2"><i style="width: {{ [user.impact_score, 100]|min }}%"></i></div>
+      <p class="small muted mb-0">
+        {% if resolved %}
+          Your reports have contributed to {{ resolved }} resolved civic issue{{ '' if resolved == 1 else 's' }}.
+        {% else %}
+          Points come from reporting issues, supporting neighbours' reports, and issues you reported being resolved.
+        {% endif %}
+      </p>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="row g-3">
+      <div class="col-4"><div class="stat"><div class="stat-value" data-count="{{ reports }}">0</div><div class="stat-label">Reports sent</div></div></div>
+      <div class="col-4"><div class="stat"><div class="stat-value" data-count="{{ supported }}">0</div><div class="stat-label">Issues supported</div></div></div>
+      <div class="col-4"><div class="stat"><div class="stat-value" data-count="{{ resolved }}">0</div><div class="stat-label">Resolved</div></div></div>
+    </div>
+
+    <div class="cp-card mt-3">
+      <div class="cp-card-head"><h3>Your issues</h3></div>
+      {% if issues %}
+        {% for issue in issues[:6] %}
+          <div class="issue-row">
+            {{ ui.priority_ring(issue.priority_score, true) }}
+            <div class="flex-grow-1 min-w-0">
+              <a class="issue-title" href="{{ url_for('citizen.issue_details', issue_id=issue.id) }}">{{ issue.title }}</a>
+              <div class="issue-meta">{{ issue.code }} &middot; {{ issue.report_count }} reports</div>
+            </div>
+            <span class="badge-status {{ status_class(issue.status) }}">{{ issue.status }}</span>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty"><p class="small mb-0">No issues yet.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

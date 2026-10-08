@@ -1,0 +1,70 @@
+{% extends "shell.html" %}
+{% block title %}Priority queue — CivicPulse{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Priority queue</h1>
+    <p>{{ issues|length }} issue{{ '' if issues|length == 1 else 's' }}, highest priority first.</p>
+  </div>
+  <a class="btn btn-outline-ink" href="{{ url_for('admin.city_map') }}">Open on map</a>
+</div>
+
+<form class="cp-card cp-card-pad mb-3" method="get">
+  <div class="row g-2 align-items-end">
+    <div class="col-6 col-md-3">
+      <label class="form-label" for="status">Status</label>
+      <select class="form-select form-select-sm" id="status" name="status">
+        <option value="">All statuses</option>
+        {% for status in statuses %}<option value="{{ status }}" {% if active_status == status %}selected{% endif %}>{{ status }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-6 col-md-3">
+      <label class="form-label" for="category">Category</label>
+      <select class="form-select form-select-sm" id="category" name="category">
+        <option value="">All categories</option>
+        {% for category in categories %}<option value="{{ category.id }}" {% if active_category == category.id|string %}selected{% endif %}>{{ category.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-6 col-md-3">
+      <label class="form-label" for="level">Priority band</label>
+      <select class="form-select form-select-sm" id="level" name="level">
+        <option value="">All priorities</option>
+        {% for band in ['Critical','High','Medium','Low'] %}
+          <option value="{{ band|lower }}" {% if active_level == band|lower %}selected{% endif %}>{{ band }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-6 col-md-3 d-flex gap-2">
+      <button class="btn btn-primary btn-sm flex-grow-1" type="submit">Apply</button>
+      <a class="btn btn-outline-ink btn-sm" href="{{ url_for('admin.issues') }}">Reset</a>
+    </div>
+  </div>
+</form>
+
+<div class="cp-card table-wrap">
+  <table class="table-cp">
+    <thead>
+      <tr><th>Issue</th><th>Category</th><th>Reports</th><th>Priority</th><th>Risk</th><th>Department</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      {% for issue in issues %}
+        <tr>
+          <td>
+            <a class="issue-title" href="{{ url_for('admin.issue_details', issue_id=issue.id) }}">{{ issue.title }}</a>
+            <div class="issue-meta">{{ issue.code }}{% if issue.address %} &middot; {{ issue.address|truncate(40) }}{% endif %}</div>
+          </td>
+          <td class="small">{{ issue.category }}</td>
+          <td><span class="cluster-pill">{{ issue.report_count }}</span></td>
+          <td><span class="badge-pri {{ priority_class(issue.priority_score) }}">{{ issue.priority_score }} {{ priority_level(issue.priority_score) }}</span></td>
+          <td class="small">{{ issue.safety_risk }}/10</td>
+          <td class="small">{{ issue.department or '—' }}</td>
+          <td><span class="badge-status {{ status_class(issue.status) }}">{{ issue.status }}</span></td>
+        </tr>
+      {% else %}
+        <tr><td colspan="7"><div class="empty"><h3>No issues match</h3><p class="small mb-0">Clear the filters to see the full queue.</p></div></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

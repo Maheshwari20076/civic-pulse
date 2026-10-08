@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Sign in — CivicPulse{% endblock %}
+{% block body %}
+<div class="container" style="max-width:920px;padding:3rem 1rem">
+  <div class="row g-4 align-items-center">
+    <div class="col-lg-6">
+      <h1 style="font-size:1.9rem">Sign in</h1>
+      <p class="muted">Citizens track what they reported. Operators run the city intelligence centre.</p>
+      <form method="post" class="cp-card cp-card-pad" novalidate>
+        <div class="mb-3">
+          <label class="form-label" for="email">Email</label>
+          <input class="form-control" type="email" id="email" name="email" value="{{ email }}" required autocomplete="email" autofocus>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="password">Password</label>
+          <input class="form-control" type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+        <button class="btn btn-primary w-100" type="submit">Sign in</button>
+        <p class="small muted mt-3 mb-0">No account yet? <a href="{{ url_for('auth.register') }}">Create one</a>.</p>
+      </form>
+    </div>
+    <div class="col-lg-6">
+      <div class="cp-card cp-card-pad">
+        <h3 style="font-size:1rem">Demo accounts</h3>
+        <p class="small muted">Seeded by <code>database/seed.sql</code>.</p>
+        <table class="table table-sm small mb-0">
+          <tbody>
+            <tr><td class="fw-semibold">Operator</td><td>admin@civicpulse.com</td><td><code>Admin@123</code></td></tr>
+            <tr><td class="fw-semibold">Citizen</td><td>priya@example.com</td><td><code>Citizen@123</code></td></tr>
+            <tr><td class="fw-semibold">Citizen</td><td>arjun@example.com</td><td><code>Citizen@123</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

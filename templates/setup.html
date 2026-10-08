@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}CivicPulse setup{% endblock %}
+{% block body %}
+<div class="container" style="max-width:760px;padding:3rem 0">
+  <div class="cp-card cp-card-pad">
+    {% if error %}
+      <h1 style="font-size:1.5rem">The database is not reachable yet</h1>
+      <p class="muted">CivicPulse is running, but it cannot talk to its database. Everything else is ready.</p>
+      <pre class="small" style="background:var(--line-soft);padding:.9rem;border-radius:10px;white-space:pre-wrap">{{ error }}</pre>
+      <h3 class="mt-4" style="font-size:1rem">Fix it in three steps</h3>
+      <ol class="small">
+        <li>Start MySQL in XAMPP (Apache is not needed).</li>
+        <li>Import <code>database/schema.sql</code> then <code>database/seed.sql</code> — in phpMyAdmin, or with
+            <code>mysql -u root -p &lt; database/schema.sql</code>.</li>
+        <li>Check <code>.env</code>: <code>DB_USER</code>, <code>DB_PASSWORD</code> and <code>DB_NAME</code> must match your MySQL setup.</li>
+      </ol>
+      <p class="small muted">No MySQL on this machine? Set <code>DB_DRIVER=sqlite</code> in <code>.env</code> and run
+        <code>python init_db.py</code> — the whole app, including the seeded demo data, runs with no database server.</p>
+      <a class="btn btn-primary" href="{{ url_for('main.setup') }}">Check again</a>
+    {% else %}
+      <h1 style="font-size:1.5rem">Everything is connected</h1>
+      <p class="muted">The database is reachable and CivicPulse is ready to use.</p>
+      <a class="btn btn-primary" href="{{ url_for('main.landing') }}">Go to CivicPulse</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

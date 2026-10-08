@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} — CivicPulse{% endblock %}
+{% block body %}
+<div class="container" style="max-width:620px;padding:4rem 0">
+  <div class="cp-card cp-card-pad text-center">
+    <div class="stat-value">{{ code }}</div>
+    <h1 style="font-size:1.4rem">{{ title }}</h1>
+    <p class="muted mx-auto">{{ message }}</p>
+    <a class="btn btn-primary" href="{{ url_for('main.home_redirect') }}">Back to your dashboard</a>
+  </div>
+</div>
+{% endblock %}

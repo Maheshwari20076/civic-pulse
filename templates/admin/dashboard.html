@@ -1,0 +1,127 @@
+{% extends "shell.html" %}
+{% import "_macros.html" as ui %}
+{% block title %}City Intelligence Center — CivicPulse{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>City Intelligence Center</h1>
+    <p>{{ totals.total_reports }} citizen reports resolved into {{ totals.total_issues }} real civic problems.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('admin.issues') }}">Open the full queue</a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-2">
+    <div class="stat"><div class="stat-value" data-count="{{ totals.total_reports }}">0</div><div class="stat-label">Citizen reports</div></div>
+  </div>
+  <div class="col-6 col-lg-2">
+    <div class="stat"><div class="stat-value" data-count="{{ totals.active_issues }}">0</div><div class="stat-label">Active issues</div></div>
+  </div>
+  <div class="col-6 col-lg-2">
+    <div class="stat danger"><div class="stat-value" data-count="{{ totals.critical_issues }}">0</div><div class="stat-label">Critical now</div></div>
+  </div>
+  <div class="col-6 col-lg-2">
+    <div class="stat accent"><div class="stat-value" data-count="{{ signal_count }}">0</div><div class="stat-label">Emerging signals</div></div>
+  </div>
+  <div class="col-6 col-lg-2">
+    <div class="stat"><div class="stat-value" data-count="{{ totals.resolved_issues }}">0</div><div class="stat-label">Resolved</div></div>
+  </div>
+  <div class="col-6 col-lg-2">
+    <div class="stat"><div class="stat-value" data-count="{{ totals.resolution_rate }}" data-suffix="%">0</div><div class="stat-label">Resolution rate</div></div>
+  </div>
+</div>
+
+{% if stale %}
+  <div class="escalation mb-4">
+    <h3><i data-lucide="alarm-clock" style="width:16px;height:16px"></i> Attention required</h3>
+    <p class="small mb-2">{{ stale|length }} issue{{ '' if stale|length == 1 else 's' }} have sat with a department past
+      the follow-up window. Escalation recommended.</p>
+    <div class="d-flex flex-wrap gap-2">
+      {% for row in stale[:4] %}
+        <a class="chip" href="{{ url_for('admin.issue_details', issue_id=row.id) }}">
+          {{ row.code }} &middot; {{ row.title|truncate(34) }} &middot; {{ row.hours_stale }}h in {{ row.status }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+<div class="intel-strip mb-4">
+  <div><span class="intel-icon"><i data-lucide="scan-search"></i></span><div><b>Municipal intelligence snapshot</b><small>Live operational view from the current CivicPulse dataset</small></div></div>
+  <div class="intel-item"><b>{{ totals.total_reports }}</b><span>reports</span></div>
+  <div class="intel-item"><b>{{ totals.total_issues }}</b><span>real issues</span></div>
+  <div class="intel-item"><b>{{ totals.critical_issues }}</b><span>critical now</span></div>
+  <a href="{{ url_for('main.business') }}" class="btn btn-outline-ink btn-sm">Business model</a>
+</div>
+
+<div class="row g-4">
+  <div class="col-xl-8">
+    <div class="cp-card">
+      <div class="cp-card-head">
+        <h3>Priority queue</h3>
+        <a class="small" href="{{ url_for('admin.issues') }}">All issues</a>
+      </div>
+      <div class="table-wrap">
+        <table class="table-cp">
+          <thead>
+            <tr><th></th><th>Issue</th><th>Reports</th><th>Priority</th><th>Department</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            {% for issue in queue %}
+              <tr>
+                <td><div class="queue-rank">{{ loop.index }}</div></td>
+                <td>
+                  <a class="issue-title" href="{{ url_for('admin.issue_details', issue_id=issue.id) }}">{{ issue.title }}</a>
+                  <div class="issue-meta">{{ issue.code }} &middot; {{ issue.category }}{% if issue.address %} &middot; {{ issue.address|truncate(38) }}{% endif %}</div>
+                </td>
+                <td><span class="cluster-pill">{{ issue.report_count }}</span></td>
+                <td>
+                  <span class="badge-pri {{ priority_class(issue.priority_score) }}">{{ issue.priority_score }} {{ priority_level(issue.priority_score) }}</span>
+                </td>
+                <td class="small">{{ issue.department or '—' }}</td>
+                <td><span class="badge-status {{ status_class(issue.status) }}">{{ issue.status }}</span></td>
+              </tr>
+            {% else %}
+              <tr><td colspan="6"><div class="empty"><p class="mb-0 small">No open issues.</p></div></td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-4">
+    <div class="cp-card mb-4">
+      <div class="cp-card-head"><h3>Emerging signals</h3><a class="small" href="{{ url_for('admin.signals') }}">Details</a></div>
+      {% if signals %}
+        {% for signal in signals[:3] %}
+          <div class="cp-card-pad" style="border-bottom:1px solid var(--line-soft)">
+            <div class="d-flex justify-content-between gap-2">
+              <div class="fw-bold">{{ signal.title|capitalize }}</div>
+              <div class="conf">{{ (signal.confidence * 100)|round|int }}%</div>
+            </div>
+            <div class="issue-meta">{{ signal.area }} &middot; {{ signal.issue_count }} issues &middot; {{ signal.report_count }} reports</div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty"><p class="small mb-0">No patterns above threshold in the current window.</p></div>
+      {% endif %}
+    </div>
+
+    <div class="cp-card">
+      <div class="cp-card-head"><h3>Where issues stand</h3></div>
+      <div class="cp-card-pad">
+        {% set total = by_status|sum(attribute='c') or 1 %}
+        {% for row in by_status %}
+          <div class="breakdown-row">
+            <div class="lbl">{{ row.status }}</div>
+            <div class="bar"><i style="width: {{ (100 * row.c / total)|round|int }}%"></i></div>
+            <div class="val">{{ row.c }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "shell.html" %}
+{% block title %}Departments — CivicPulse{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Departments</h1>
+    <p>Who is carrying how much, and how much of it is getting closed.</p>
+  </div>
+</div>
+
+<div class="row g-3">
+  {% for department in departments %}
+    <div class="col-lg-6">
+      <div class="cp-card cp-card-pad h-100">
+        <div class="d-flex justify-content-between align-items-start gap-2">
+          <div>
+            <h3 style="font-size:1.05rem;margin:0">{{ department.name }}</h3>
+            <p class="small muted mb-0">{{ department.description }}</p>
+          </div>
+          {% if department.critical_issues %}
+            <span class="badge-pri critical">{{ department.critical_issues }} critical</span>
+          {% endif %}
+        </div>
+
+        <div class="row g-2 mt-3">
+          <div class="col-4"><div class="stat-value" style="font-size:1.4rem">{{ department.active_issues }}</div><div class="stat-label">Open</div></div>
+          <div class="col-4"><div class="stat-value" style="font-size:1.4rem">{{ department.resolved_issues }}</div><div class="stat-label">Resolved</div></div>
+          <div class="col-4"><div class="stat-value" style="font-size:1.4rem">{{ department.resolution_rate }}%</div><div class="stat-label">Closed rate</div></div>
+        </div>
+
+        <div class="stat-label mt-3">Relative workload</div>
+        <div class="impact-meter"><i style="width: {{ department.workload }}%"></i></div>
+        <a class="btn btn-outline-ink btn-sm mt-3" href="{{ url_for('admin.issues') }}">See its queue</a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

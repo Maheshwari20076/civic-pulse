@@ -1,0 +1,36 @@
+{% extends "shell.html" %}
+{% block title %}Notifications — CivicPulse{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Notifications</h1>
+    <p>Updates on issues you reported or supported.</p>
+  </div>
+</div>
+
+<div class="cp-card">
+  {% if items %}
+    {% for item in items %}
+      <div class="issue-row">
+        <span class="chip">
+          <i data-lucide="{{ {'merged':'combine','resolved':'check-circle','assigned':'building-2','status':'refresh-cw','submitted':'send'}.get(item.type, 'bell') }}"
+             style="width:14px;height:14px"></i>{{ item.type }}
+        </span>
+        <div class="flex-grow-1 min-w-0">
+          <div{% if not item.is_read %} class="fw-semibold"{% endif %}>{{ item.message }}</div>
+          <div class="issue-meta">{{ item.created_at|timeago }}</div>
+        </div>
+        {% if item.issue_id %}
+          <a class="btn btn-sm btn-outline-ink" href="{{ url_for('citizen.issue_details', issue_id=item.issue_id) }}">View</a>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">
+      <h3>No notifications yet</h3>
+      <p class="small">Report or support an issue and updates will land here.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
